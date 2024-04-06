@@ -1,13 +1,11 @@
 package org.example.repository;
 
 import org.example.database.Database;
-import org.example.repository.dao.CatDao;
+import org.example.repository.dao.UrlDao;
 
-import java.math.BigInteger;
 import java.util.Optional;
-import java.util.UUID;
 
-public class CatRepositoryImpl implements CatRepository {
+public class UrlRepositoryImpl implements UrlRepository {
 
     private static final Database dataBase = Database.getInstance();
 
@@ -28,16 +26,16 @@ public class CatRepositoryImpl implements CatRepository {
     }
 
     @Override
-    public Optional<CatDao> findCatById(String id) {
-        return Optional.ofNullable(dataBase.getCat(id));
+    public Optional<UrlDao> findUrlById(String id) {
+        return Optional.ofNullable(dataBase.getUrl(id));
     }
 
     @Override
-    public String save(CatDao catDao) {
-        String catDaoId = catDao.id();
-        if (catDaoId != null) {
-            dataBase.saveCat(catDao);
-            return catDaoId;
+    public String save(UrlDao urlDao) {
+        String urlDaoId = urlDao.id();
+        if (urlDaoId != null) {
+            dataBase.saveUrl(urlDao);
+            return urlDaoId;
         }
 
         idCount = idCount + 1L;
@@ -46,7 +44,7 @@ public class CatRepositoryImpl implements CatRepository {
 
         String base62HashString = base62HashCode(id);
 
-        dataBase.saveCat(new CatDao(id, catDao.longURL(), base62HashString));
+        dataBase.saveUrl(new UrlDao(id, urlDao.longURL(), base62HashString));
         return id;
     }
 }

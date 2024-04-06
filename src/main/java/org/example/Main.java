@@ -1,18 +1,18 @@
 package org.example;
 
-import org.example.controller.CatController;
-import org.example.controller.dto.CatDto;
+import org.example.controller.UrlController;
+import org.example.controller.dto.UrlDto;
 import org.example.exception.EntityNotFoundException;
-import org.example.repository.CatRepositoryImpl;
-import org.example.service.CatServiceImpl;
-import org.example.service.model.Cat;
+import org.example.repository.UrlRepositoryImpl;
+import org.example.service.UrlServiceImpl;
+import org.example.service.model.Url;
 import org.example.utils.ReadUtils;
 
 public class Main {
     public static void main(String[] args) {
 
         while (true) {
-            CatController catController = new CatController(new CatServiceImpl(new CatRepositoryImpl()));
+            UrlController urlController = new UrlController(new UrlServiceImpl(new UrlRepositoryImpl()));
             printMenu();
             String chosenService = ReadUtils.readLine();
 
@@ -22,17 +22,17 @@ public class Main {
                 while (longURLString == "") {
                     longURLString = readAndValidateURL();
                 }
-                String id = catController.addCat(new CatDto(longURLString));
+                String id = urlController.addUrl(new UrlDto(longURLString));
                 System.out.printf("Создан исходный URL-адрес %s \n С идентификатором %s%n", longURLString, id);
 
             } else if (chosenService.equals("2")) {
                 System.out.println("Введите идентификатор (id) URL-адреса:");
                 String id = ReadUtils.readLine();
                 try {
-                    CatDto catDto = catController.getCat(id);
+                    UrlDto urlDto = urlController.getUrl(id);
                     System.out.printf(
                             "Найден URL-адрес \n С идентификатором %s \n Длинный (long) URL-адрес: %s\n Сокращенный (short) URL-адрес: %s\n%n",
-                            catDto.id(), catDto.longURL(), catDto.shortURL()
+                            urlDto.id(), urlDto.longURL(), urlDto.shortURL()
                     );
                 } catch (EntityNotFoundException ex) {
                     System.out.printf("URL-адрес с идентификатором %s не найден%n", id);
