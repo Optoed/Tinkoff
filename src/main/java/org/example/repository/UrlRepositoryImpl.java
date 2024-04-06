@@ -25,6 +25,10 @@ public class UrlRepositoryImpl implements UrlRepository {
         return base62HashCodeString.toString();
     }
 
+    private static String getMyServer() {
+        return dataBase.getMyServer();
+    }
+
     @Override
     public Optional<UrlDao> findUrlById(String id) {
         return Optional.ofNullable(dataBase.getUrl(id));
@@ -44,7 +48,9 @@ public class UrlRepositoryImpl implements UrlRepository {
 
         String base62HashString = base62HashCode(id);
 
-        dataBase.saveUrl(new UrlDao(id, urlDao.longURL(), base62HashString));
+        String newShortURl = getMyServer() + base62HashString;
+
+        dataBase.saveUrl(new UrlDao(id, urlDao.longURL(), newShortURl));
         return id;
     }
 }

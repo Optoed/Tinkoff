@@ -13,6 +13,10 @@ public class Database {
     //Сервер для хранения URL-ссылок
     public static final String MyServer = "https://MyServer.com/";
 
+    public String getMyServer() {
+        return MyServer;
+    }
+
     private Database() {
         urlsMap = new HashMap<>();
     }
