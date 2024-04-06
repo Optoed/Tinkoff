@@ -38,6 +38,12 @@ public class Main {
                     System.out.printf("URL-адрес с идентификатором %s не найден%n", id);
                 }
             } else if (chosenService.equals("3")) {
+                //реализуй код
+                return;
+            } else if (chosenService.equals("4")) {
+                //реализуй код
+                return;
+            } else if (chosenService.equals("5")) {
                 return;
             } else {
                 System.out.println("Выберите валидный вариант");
@@ -46,6 +52,10 @@ public class Main {
     }
 
     private static String readAndValidateURL() {
+
+        // !!! добавь валидатор try catch на начало строки http:// или https://
+        // можно ещё потом проверять чтобы были только допустимые символы, но думаю не стоит пока что
+
         // Убрана конструкция try catch
         String URLString = ReadUtils.readLine();
         //если пустая строка или состоит только из пробелов
@@ -65,7 +75,7 @@ public class Main {
                 Выберите действие:
                                 
                 1. Добавить url-адрес в укороченном формате
-                2. Найти исходный url-адрес и сокращенный по id
+                2. Найти исходный url-адрес и сокращенный по идентификатору id
                 3. Найти исходный url-адрес по укороченной версии
                 4. Найти укороченную версию url-адреса по его исходной версии
                 5. Выйти
