@@ -24,8 +24,11 @@ public class Main {
                 while (longURLString == "") {
                     longURLString = readAndValidateURL();
                 }
-                String id = urlController.addUrl(new UrlDto(longURLString));
-                System.out.printf("Создан исходный URL-адрес %s \n С идентификатором %s%n", longURLString, id);
+                //String id = urlController.addUrl(new UrlDto(longURLString));
+                UrlDto urlDto = urlController.addUrl(new UrlDto(longURLString));
+                System.out.printf("Добавлен URL-адрес \n С идентификатором %s \n Длинный (long) URL-адрес: %s\n Сокращенный (short) URL-адрес: %s\n%n",
+                        urlDto.id(), urlDto.longURL(), urlDto.shortURL()
+                );
 
             } else if (chosenService.equals("2")) {
                 System.out.println("Введите идентификатор (id) URL-адреса:");
@@ -39,14 +42,46 @@ public class Main {
                 } catch (EntityNotFoundException ex) {
                     System.out.printf("URL-адрес с идентификатором %s не найден%n", id);
                 }
+
             } else if (chosenService.equals("3")) {
-                //реализуй код
-                return;
+                System.out.println("Введите сокращенный (short) URL-адрес:");
+                String shortURLString = "";
+                while (shortURLString.equals("")) {
+                    shortURLString = readAndValidateURL();
+                }
+                try {
+                    UrlDto inputUrlDto = new UrlDto("", shortURLString);
+                    UrlDto urlDto = urlController.getUrl(inputUrlDto);
+
+                    System.out.printf(
+                            "Найден URL-адрес \n С идентификатором %s \n Длинный (long) URL-адрес: %s\n Сокращенный (short) URL-адрес: %s\n%n",
+                            urlDto.id(), urlDto.longURL(), urlDto.shortURL()
+                    );
+                } catch (EntityNotFoundException ex) {
+                    System.out.printf("URL-адрес с таким сокращенным (short) URl %s не найден%n", shortURLString);
+                }
+
             } else if (chosenService.equals("4")) {
-                //реализуй код
-                return;
+                System.out.println("Введите исходный (long) URL-адрес:");
+                String longURLString = "";
+                while (longURLString.equals("")) {
+                    longURLString = readAndValidateURL();
+                }
+                try {
+                    UrlDto inputUrlDto = new UrlDto(longURLString);
+                    UrlDto urlDto = urlController.getUrl(inputUrlDto);
+
+                    System.out.printf(
+                            "Найден URL-адрес \n С идентификатором %s \n Длинный (long) URL-адрес: %s\n Сокращенный (short) URL-адрес: %s\n%n",
+                            urlDto.id(), urlDto.longURL(), urlDto.shortURL()
+                    );
+                } catch (EntityNotFoundException ex) {
+                    System.out.printf("URL-адрес с таким исходным (long) URl %s не найден%n", longURLString);
+                }
+
             } else if (chosenService.equals("5")) {
                 return;
+
             } else {
                 System.out.println("Выберите валидный вариант");
             }
@@ -80,6 +115,7 @@ public class Main {
 
             System.out.println("Неправильный формат URL-адреса. Должен начинаться с https:// (или http://)" +
                     " и содержать после хотя бы один символ");
+
             return "";
 
         } catch (StringIndexOutOfBoundsException exception) {
@@ -100,8 +136,8 @@ public class Main {
                                 
                 1. Добавить url-адрес в укороченном формате
                 2. Найти исходный url-адрес и сокращенный по идентификатору id
-                3. Найти исходный url-адрес по укороченной версии
-                4. Найти укороченную версию url-адреса по его исходной версии
+                3. Найти исходный url-адрес по укороченной версии shortURL
+                4. Найти укороченную версию url-адреса по его исходной версии longURL
                 5. Выйти
                                 
                 """);

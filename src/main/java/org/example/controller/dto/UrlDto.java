@@ -10,4 +10,5 @@ public record UrlDto(String id, String longURL, String shortURL) {
     public UrlDto(String longURL, String shortURL) {
         this(null, longURL, shortURL);
     }
+
 }

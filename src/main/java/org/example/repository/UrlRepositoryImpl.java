@@ -31,18 +31,30 @@ public class UrlRepositoryImpl implements UrlRepository {
 
     @Override
     public Optional<UrlDao> findUrlById(String id) {
-        return Optional.ofNullable(dataBase.getUrl(id));
+        return Optional.ofNullable(dataBase.getUrlById(id));
+    }
+
+    //поиск по longURL
+    @Override
+    public Optional<UrlDao> findUrlByLongUrl(String longURL) {
+        return Optional.ofNullable(dataBase.getUrlByLongUrl(longURL));
+    }
+
+    //поиск по shortURL
+    @Override
+    public Optional<UrlDao> findUrlByShortUrl(String shortURL) {
+        return Optional.ofNullable(dataBase.getUrlByShortUrl(shortURL));
     }
 
     @Override
-    public String save(UrlDao urlDao) {
+    public UrlDao save(UrlDao urlDao) {
         String urlDaoId = urlDao.id();
         if (urlDaoId != null) {
-            dataBase.saveUrl(urlDao);
-            return urlDaoId;
+            return dataBase.saveUrl(urlDao);
         }
 
-        idCount = idCount + 1L;
+//      Можешь менять прибавляемое значение для теста например на + 10000000000000L
+        idCount = idCount + 100000000000000L;
 
         String id = String.valueOf(idCount);
 
@@ -50,7 +62,6 @@ public class UrlRepositoryImpl implements UrlRepository {
 
         String newShortURl = getMyServer() + base62HashString;
 
-        dataBase.saveUrl(new UrlDao(id, urlDao.longURL(), newShortURl));
-        return id;
+        return dataBase.saveUrl(new UrlDao(id, urlDao.longURL(), newShortURl));
     }
 }

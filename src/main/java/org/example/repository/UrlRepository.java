@@ -8,5 +8,9 @@ public interface UrlRepository {
 
     Optional<UrlDao> findUrlById(String id);
 
-    String save(UrlDao urlDao);
+    Optional<UrlDao> findUrlByLongUrl(String longURL);
+
+    Optional<UrlDao> findUrlByShortUrl(String shortUrl);
+
+    UrlDao save(UrlDao urlDao);
 }

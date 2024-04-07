@@ -13,12 +13,24 @@ public class UrlController {
         this.urlService = urlService;
     }
 
-    public String addUrl(UrlDto urlDto) {
-        return urlService.addUrl(new Url(urlDto.longURL()));
+//    public String addUrl(UrlDto urlDto) {
+//        return urlService.addUrl(new Url(urlDto.longURL()));
+//    }
+
+    public UrlDto addUrl(UrlDto urlDto) {
+        Url addedUrl =  urlService.addUrl(new Url(urlDto.longURL()));
+        return new UrlDto(addedUrl.id(), addedUrl.longURL(), addedUrl.shortURL());
     }
 
+    //получаем по id
     public UrlDto getUrl(String id) throws EntityNotFoundException {
         Url url = urlService.findUrl(id);
+        return new UrlDto(url.id(), url.longURL(), url.shortURL());
+    }
+
+    //получаем по shortURL или по longURL => сразу по urlDto
+    public UrlDto getUrl(UrlDto urlDto) throws EntityNotFoundException {
+        Url url = urlService.findUrl(new Url(urlDto));
         return new UrlDto(url.id(), url.longURL(), url.shortURL());
     }
 }
