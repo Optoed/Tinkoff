@@ -54,7 +54,7 @@ public class UrlRepositoryImpl implements UrlRepository {
         }
 
 //      Можешь менять прибавляемое значение для теста например на + 10000000000000L
-        idCount = idCount + 100000000000000L;
+        idCount = idCount + 1L;
 
         String id = String.valueOf(idCount);
 
