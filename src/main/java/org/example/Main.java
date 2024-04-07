@@ -8,6 +8,8 @@ import org.example.service.UrlServiceImpl;
 import org.example.service.model.Url;
 import org.example.utils.ReadUtils;
 
+import java.net.URL;
+
 public class Main {
     public static void main(String[] args) {
 
@@ -54,17 +56,39 @@ public class Main {
     private static String readAndValidateURL() {
 
         // !!! добавь валидатор try catch на начало строки http:// или https://
+        // (в итоге catch пока что является не обязательным)
         // можно ещё потом проверять чтобы были только допустимые символы, но думаю не стоит пока что
 
-        // Убрана конструкция try catch
-        String URLString = ReadUtils.readLine();
-        //если пустая строка или состоит только из пробелов
-        if (URLString.isBlank()) {
-            System.out.println("Введена пустая строка. Введите url-адрес, содержащий символы");
-            return null;
+        try {
+            String URLString = ReadUtils.readLine();
+            //если пустая строка или состоит только из пробелов
+            if (URLString.isBlank()) {
+                System.out.println("Введена пустая строка. Введите url-адрес, содержащий символы");
+                return "";
+            }
+
+            if (URLString.length() > 7) {
+                if (URLString.substring(0, 7).equals("http://")) {
+                    return URLString;
+                }
+            }
+            if (URLString.length() > 2) {
+                if (URLString.substring(0, 8).equals("https://")) {
+                    return URLString;
+                }
+            }
+
+            System.out.println("Неправильный формат URL-адреса. Должен начинаться с https:// (или http://)" +
+                    " и содержать после хотя бы один символ");
+            return "";
+
+        } catch (StringIndexOutOfBoundsException exception) {
+            System.out.println("Неправильный формат URL-адреса. Должен начинаться с https:// (или http://)" +
+                    " и содержать после хотя бы один символ");
         }
-        return URLString;
+        return "";
     }
+
 
     private static void printMenu() {
         System.out.println("""
