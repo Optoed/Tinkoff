@@ -107,7 +107,7 @@ public class Main {
                     return URLString;
                 }
             }
-            if (URLString.length() > 2) {
+            if (URLString.length() > 8) {
                 if (URLString.substring(0, 8).equals("https://")) {
                     return URLString;
                 }
