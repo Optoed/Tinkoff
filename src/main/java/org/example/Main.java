@@ -24,11 +24,11 @@ public class Main {
                 while (longURLString == "") {
                     longURLString = readAndValidateURL();
                 }
-                //String id = urlController.addUrl(new UrlDto(longURLString));
                 UrlDto urlDto = urlController.addUrl(new UrlDto(longURLString));
                 System.out.printf("Добавлен URL-адрес \n С идентификатором %s \n Длинный (long) URL-адрес: %s\n Сокращенный (short) URL-адрес: %s\n%n",
                         urlDto.id(), urlDto.longURL(), urlDto.shortURL()
                 );
+
 
             } else if (chosenService.equals("2")) {
                 System.out.println("Введите идентификатор (id) URL-адреса:");

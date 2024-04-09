@@ -13,10 +13,6 @@ public class UrlController {
         this.urlService = urlService;
     }
 
-//    public String addUrl(UrlDto urlDto) {
-//        return urlService.addUrl(new Url(urlDto.longURL()));
-//    }
-
     public UrlDto addUrl(UrlDto urlDto) {
         Url addedUrl =  urlService.addUrl(new Url(urlDto.longURL()));
         return new UrlDto(addedUrl.id(), addedUrl.longURL(), addedUrl.shortURL());

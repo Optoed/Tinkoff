@@ -55,6 +55,8 @@ public class Database {
         String longUrl = urlDao.longURL();
         String shortUrl = urlDao.shortURL();
 
+        //Версия 0.6.0 - добавлена проверка на то, что такой url уже есть.
+
         getInstance().urlsMap.put(id, urlDao);
         getInstance().longUrlsIndexMap.put(longUrl, urlDao);
         getInstance().shortUrlsIndexMap.put(shortUrl, urlDao);

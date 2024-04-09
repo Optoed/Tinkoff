@@ -53,11 +53,21 @@ public class UrlServiceImpl implements UrlService {
 
 
     @Override
-    public Url addUrl(Url url) {
-        //увеличиваем счётчик в DataBase на 1 (для нового Id)
-        makeNextId();
-        UrlDao savedUrlDao = urlRepository.save(new UrlDao(getCurrentId(), url.longURL(), getNewShortURl()));
-        return new Url(savedUrlDao.id(), savedUrlDao.longURL(), savedUrlDao.shortURL());
+    public Url addUrl(Url url) throws IllegalStateException {
+
+        Optional<UrlDao> urlDao = urlRepository.findUrlByLongUrl(url.longURL());
+
+        //то есть не нашли такой в базе данных, поэтому добавляем
+        if (urlDao.isEmpty()) {
+            //увеличиваем счётчик в DataBase на 1 (для нового Id)
+            makeNextId();
+            UrlDao savedUrlDao = urlRepository.save(new UrlDao(getCurrentId(), url.longURL(), getNewShortURl()));
+            return new Url(savedUrlDao.id(), savedUrlDao.longURL(), savedUrlDao.shortURL());
+        }
+        else {
+            return new Url(urlDao.get().id(), urlDao.get().longURL(), urlDao.get().shortURL());
+        }
+
     }
 
     @Override
