@@ -25,25 +25,11 @@ public class Main {
                     longURLString = readAndValidateURL();
                 }
                 UrlDto urlDto = urlController.addUrl(new UrlDto(longURLString));
-                System.out.printf("Добавлен URL-адрес \n С идентификатором %s \n Длинный (long) URL-адрес: %s\n Сокращенный (short) URL-адрес: %s\n%n",
+                System.out.printf("Добавлен/найден URL-адрес \n С идентификатором %s \n Длинный (long) URL-адрес: %s\n Сокращенный (short) URL-адрес: %s\n%n",
                         urlDto.id(), urlDto.longURL(), urlDto.shortURL()
                 );
 
-
             } else if (chosenService.equals("2")) {
-                System.out.println("Введите идентификатор (id) URL-адреса:");
-                String id = ReadUtils.readLine();
-                try {
-                    UrlDto urlDto = urlController.getUrl(id);
-                    System.out.printf(
-                            "Найден URL-адрес \n С идентификатором %s \n Длинный (long) URL-адрес: %s\n Сокращенный (short) URL-адрес: %s\n%n",
-                            urlDto.id(), urlDto.longURL(), urlDto.shortURL()
-                    );
-                } catch (EntityNotFoundException ex) {
-                    System.out.printf("URL-адрес с идентификатором %s не найден%n", id);
-                }
-
-            } else if (chosenService.equals("3")) {
                 System.out.println("Введите сокращенный (short) URL-адрес:");
                 String shortURLString = "";
                 while (shortURLString.equals("")) {
@@ -61,25 +47,7 @@ public class Main {
                     System.out.printf("URL-адрес с таким сокращенным (short) URl %s не найден%n", shortURLString);
                 }
 
-            } else if (chosenService.equals("4")) {
-                System.out.println("Введите исходный (long) URL-адрес:");
-                String longURLString = "";
-                while (longURLString.equals("")) {
-                    longURLString = readAndValidateURL();
-                }
-                try {
-                    UrlDto inputUrlDto = new UrlDto(longURLString);
-                    UrlDto urlDto = urlController.getUrl(inputUrlDto);
-
-                    System.out.printf(
-                            "Найден URL-адрес \n С идентификатором %s \n Длинный (long) URL-адрес: %s\n Сокращенный (short) URL-адрес: %s\n%n",
-                            urlDto.id(), urlDto.longURL(), urlDto.shortURL()
-                    );
-                } catch (EntityNotFoundException ex) {
-                    System.out.printf("URL-адрес с таким исходным (long) URl %s не найден%n", longURLString);
-                }
-
-            } else if (chosenService.equals("5")) {
+            } else if (chosenService.equals("3")) {
                 return;
 
             } else {
@@ -90,8 +58,6 @@ public class Main {
 
     private static String readAndValidateURL() {
 
-        // !!! добавь валидатор try catch на начало строки http:// или https://
-        // (в итоге catch пока что является не обязательным)
         // можно ещё потом проверять чтобы были только допустимые символы, но думаю не стоит пока что
 
         try {
@@ -136,10 +102,8 @@ public class Main {
                 Выберите действие:
                                 
                 1. Добавить url-адрес в укороченном формате
-                2. Найти исходный url-адрес и сокращенный по идентификатору id
-                3. Найти исходный url-адрес по укороченной версии shortURL
-                4. Найти укороченную версию url-адреса по его исходной версии longURL
-                5. Выйти
+                2. Найти исходный url-адрес по укороченной версии shortURL
+                3. Выйти
                                 
                 """);
     }
