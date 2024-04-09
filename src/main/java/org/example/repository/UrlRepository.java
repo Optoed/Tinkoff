@@ -13,4 +13,11 @@ public interface UrlRepository {
     Optional<UrlDao> findUrlByShortUrl(String shortUrl);
 
     UrlDao save(UrlDao urlDao);
+
+    String getNextId();
+
+    String getCurrentId();
+
+    String getMyServer();
+
 }

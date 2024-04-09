@@ -25,4 +25,12 @@ public interface UrlService {
 
     // 1) Возможно стоит выбрать Optional? 2) Возможно throws EntityNotFoundException; может не подойти
     Url findUrl(Url url) throws EntityNotFoundException;
+
+    void makeNextId();
+
+    String getCurrentId();
+
+    String getNewShortURl();
+
+    String getBase62HashCode(String id);
 }

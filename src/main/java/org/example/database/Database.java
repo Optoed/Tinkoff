@@ -2,6 +2,7 @@ package org.example.database;
 
 import org.example.controller.dto.UrlDto;
 import org.example.repository.dao.UrlDao;
+import org.w3c.dom.css.Counter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +14,7 @@ public class Database {
     private final Map<String, UrlDao> shortUrlsIndexMap;
     private final Map<String, UrlDao> longUrlsIndexMap;
 
+    private static long idCount = 0L;
 
     //Сервер для хранения URL-ссылок
     public static final String MyServer = "https://MyServer.com/";
@@ -36,6 +38,16 @@ public class Database {
             instance = new Database();
         }
         return instance;
+    }
+
+    //возможно static тут нужен
+    public synchronized long getNextCounter() {
+        idCount = idCount + 1L;
+        return idCount;
+    }
+
+    public  synchronized long getCurrentCounter() {
+        return idCount;
     }
 
     public UrlDao saveUrl(UrlDao urlDao) {

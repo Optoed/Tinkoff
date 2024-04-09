@@ -16,9 +16,47 @@ public class UrlServiceImpl implements UrlService {
         this.urlRepository = urlRepository;
     }
 
+    private static final String allBase62Characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
+    //Получение хэш-строки из id (переводим в десятичное число и потом в 62-ричное)
+    @Override
+    public String getBase62HashCode(String id) {
+        long base10HashCode = Long.parseLong(id);
+        StringBuilder base62HashCodeString = new StringBuilder();
+        while (base10HashCode > 0) {
+            base62HashCodeString.append(allBase62Characters.charAt((int)(base10HashCode % 62)));
+            base10HashCode = base10HashCode / 62;
+        }
+        return base62HashCodeString.toString();
+    }
+
+    @Override
+    public void makeNextId() {
+        //Вызываем один раз
+        urlRepository.getNextId();
+    }
+
+    @Override
+    public String getCurrentId() {
+        //можем вызывать сколько угодно раз
+        return urlRepository.getCurrentId();
+    }
+
+    @Override
+    public String getNewShortURl() {
+        //но на момент вызова мы предварительно вызовем makeNextId(), тем самым сделав Id актуальным
+        String id = getCurrentId();
+        String base62HashString = getBase62HashCode(id);
+        String newShortURl = urlRepository.getMyServer() + base62HashString;
+        return newShortURl;
+    }
+
+
     @Override
     public Url addUrl(Url url) {
-        UrlDao savedUrlDao = urlRepository.save(new UrlDao(url.longURL(), url.shortURL()));
+        //увеличиваем счётчик в DataBase на 1 (для нового Id)
+        makeNextId();
+        UrlDao savedUrlDao = urlRepository.save(new UrlDao(getCurrentId(), url.longURL(), getNewShortURl()));
         return new Url(savedUrlDao.id(), savedUrlDao.longURL(), savedUrlDao.shortURL());
     }
 

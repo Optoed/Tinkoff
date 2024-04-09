@@ -9,23 +9,8 @@ public class UrlRepositoryImpl implements UrlRepository {
 
     private static final Database dataBase = Database.getInstance();
 
-    private static long idCount = 0L;
-
-    private static final String allBase62Characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-
-
-    //Получение хэш-строки из id (переводим в десятичное число и потом в 62-ричное)
-    private String base62HashCode(String id) {
-        long base10HashCode = Long.parseLong(id);
-        StringBuilder base62HashCodeString = new StringBuilder();
-        while (base10HashCode > 0) {
-            base62HashCodeString.append(allBase62Characters.charAt((int)(base10HashCode % 62)));
-            base10HashCode = base10HashCode / 62;
-        }
-        return base62HashCodeString.toString();
-    }
-
-    private static String getMyServer() {
+    @Override
+    public String getMyServer() {
         return dataBase.getMyServer();
     }
 
@@ -48,20 +33,18 @@ public class UrlRepositoryImpl implements UrlRepository {
 
     @Override
     public UrlDao save(UrlDao urlDao) {
-        String urlDaoId = urlDao.id();
-        if (urlDaoId != null) {
-            return dataBase.saveUrl(urlDao);
-        }
+        return dataBase.saveUrl(urlDao);
+    }
 
-//      Можешь менять прибавляемое значение для теста например на + 10000000000000L
-        idCount = idCount + 1L;
+    @Override
+    public String getNextId() {
+        long nextId = dataBase.getNextCounter();
+        return String.valueOf(nextId);
+    }
 
-        String id = String.valueOf(idCount);
-
-        String base62HashString = base62HashCode(id);
-
-        String newShortURl = getMyServer() + base62HashString;
-
-        return dataBase.saveUrl(new UrlDao(id, urlDao.longURL(), newShortURl));
+    @Override
+    public String getCurrentId() {
+        long currentId = dataBase.getCurrentCounter();
+        return String.valueOf(currentId);
     }
 }

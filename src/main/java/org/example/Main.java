@@ -102,16 +102,17 @@ public class Main {
                 return "";
             }
 
-            if (URLString.length() > 7) {
-                if (URLString.substring(0, 7).equals("http://")) {
-                    return URLString;
-                }
-            }
             if (URLString.length() > 8) {
                 if (URLString.substring(0, 8).equals("https://")) {
                     return URLString;
                 }
             }
+            if (URLString.length() > 7) {
+                if (URLString.substring(0, 7).equals("http://")) {
+                    return URLString;
+                }
+            }
+
 
             System.out.println("Неправильный формат URL-адреса. Должен начинаться с https:// (или http://)" +
                     " и содержать после хотя бы один символ");
