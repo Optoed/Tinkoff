@@ -1,4 +1,4 @@
-.idea
+#.idea
 
 .gradle
 build/
@@ -45,4 +45,3 @@ bin/
 
 
 ### Git commits ###
-.stop
