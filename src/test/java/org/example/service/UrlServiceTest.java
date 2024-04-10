@@ -10,8 +10,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UrlServiceTest {
 
-    //РўР•РЎРў в„–1
-    //РґРѕР±Р°РІРёС‚СЊ longUrl Рё СЃРѕС…СЂР°РЅРёС‚СЊ, РІРµСЂРЅСѓРІ Р·РЅР°С‡РµРЅРёРµ
+    // Позитивные сценарии
+
+    //ТЕСТ №1
+    //добавить longUrl и сохранить, вернув значение
     @Test
     void testAddUrl1() throws EntityNotFoundException {
         UrlService urlService = new UrlServiceImpl(new UrlRepositoryImpl());
@@ -27,8 +29,8 @@ public class UrlServiceTest {
         assertEquals(expectedShortUrl, addedUrl.shortURL());
     }
 
-    //РўР•РЎРў в„–2
-    //РїРѕРїСЂРѕР±РѕРІР°С‚СЊ РґРѕР±Р°РІРёС‚СЊ longUrl, РєРѕРіРґР° РѕРЅ СѓР¶Рµ РµСЃС‚СЊ РІ Р±Р°Р·Рµ Рё РѕС‚РґР°С‚СЊ Р·РЅР°С‡РµРЅРёРµ РёР· РЅРµС‘
+    //ТЕСТ №2
+    //попробовать добавить longUrl, когда он уже есть в базе и отдать значение из неё
     @Test
     void testAddUrl2() throws EntityNotFoundException {
         UrlService urlService = new UrlServiceImpl(new UrlRepositoryImpl());
@@ -45,8 +47,8 @@ public class UrlServiceTest {
         assertEquals(expectedShortUrl, addedUrl.shortURL());
     }
 
-    //РўР•РЎРў в„–3
-    //РЅР°Р№С‚Рё РїРѕ shortUrl РёСЃС…РѕРґРЅС‹Р№ longUrl
+    //ТЕСТ №3
+    //найти по shortUrl исходный longUrl
     @Test
     void testAddUrl3() throws EntityNotFoundException {
         UrlService urlService = new UrlServiceImpl(new UrlRepositoryImpl());
@@ -62,5 +64,26 @@ public class UrlServiceTest {
         assertEquals(expectedFoundedLongUrl, foundedUrl.longURL());
         assertEquals(expectedId, foundedUrl.id());
         assertEquals(expectedShortUrl, foundedUrl.shortURL());
+    }
+
+
+    // Негативные сценарии
+
+    // ТЕСТ №4
+    // Попробовать найти по shortURL несуществующий в бд longURL
+    @Test
+    void testAddUrl4() throws EntityNotFoundException {
+        UrlService urlService = new UrlServiceImpl(new UrlRepositoryImpl());
+        //given:
+        String ShortUrlTryToFind = "https://MyServer.com/1";
+        //when:
+        try {
+            Url foundedUrl = urlService.findUrl(ShortUrlTryToFind);
+        } catch (Exception ex) {
+            System.out.printf("URL-адрес с таким сокращенным (short) URl %s не найден%n", ShortUrlTryToFind);
+        }
+
+
+        //then:
     }
 }
