@@ -10,18 +10,11 @@ import java.util.Map;
 public class Database {
 
     private static Database instance;
-    private final Map<String, UrlDao> urlsMap;
-    private final Map<String, UrlDao> shortUrlsIndexMap;
-    private final Map<String, UrlDao> longUrlsIndexMap;
+    public final Map<String, UrlDao> urlsMap;
+    public final Map<String, UrlDao> shortUrlsIndexMap;
+    public final Map<String, UrlDao> longUrlsIndexMap;
 
     private static long idCount = 0L;
-
-    //Сервер для хранения URL-ссылок
-    public static final String MyServer = "https://MyServer.com/";
-
-    public String getMyServer() {
-        return MyServer;
-    }
 
     private Database() {
         urlsMap = new HashMap<>();
@@ -44,6 +37,10 @@ public class Database {
     public synchronized long getNextCounter() {
         idCount = idCount + 1L;
         return idCount;
+    }
+
+    public static synchronized void resetIdCounter() {
+        idCount = 0L;
     }
 
     public  synchronized long getCurrentCounter() {

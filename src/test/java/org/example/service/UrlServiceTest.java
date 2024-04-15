@@ -1,19 +1,32 @@
 package org.example.service;
 
+import org.example.database.Database;
 import org.example.exception.EntityNotFoundException;
 
 import org.example.repository.UrlRepositoryImpl;
 import org.example.service.model.Url;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.nio.charset.StandardCharsets;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class UrlServiceTest {
 
-    // Ïîçèòèâíûå ñöåíàðèè
+    @BeforeEach
+    void setUp() {
+        Database database = Database.getInstance();
+        database.urlsMap.clear();
+        database.longUrlsIndexMap.clear();
+        database.shortUrlsIndexMap.clear();
+        Database.resetIdCounter(); // Ð”Ð¾Ð±Ð°Ð²Ð»ÑÐµÐ¼ Ð¼ÐµÑ‚Ð¾Ð´ ÑÐ±Ñ€Ð¾ÑÐ° ÑÑ‡ÐµÑ‚Ñ‡Ð¸ÐºÐ°
+    }
 
-    //ÒÅÑÒ ¹1
-    //äîáàâèòü longUrl è ñîõðàíèòü, âåðíóâ çíà÷åíèå
+    // ÐŸÐ¾Ð·Ð¸Ñ‚Ð¸Ð²Ð½Ñ‹Ðµ ÑÑ†ÐµÐ½Ð°Ñ€Ð¸Ð¸
+
+    //Ð¢Ð•Ð¡Ð¢ â„–1
+    //Ð´Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ longUrl Ð¸ ÑÐ¾Ñ…Ñ€Ð°Ð½Ð¸Ñ‚ÑŒ, Ð²ÐµÑ€Ð½ÑƒÐ² Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ðµ
     @Test
     void testAddUrl1() throws EntityNotFoundException {
         UrlService urlService = new UrlServiceImpl(new UrlRepositoryImpl());
@@ -29,8 +42,8 @@ public class UrlServiceTest {
         assertEquals(expectedShortUrl, addedUrl.shortURL());
     }
 
-    //ÒÅÑÒ ¹2
-    //ïîïðîáîâàòü äîáàâèòü longUrl, êîãäà îí óæå åñòü â áàçå è îòäàòü çíà÷åíèå èç íå¸
+    //Ð¢Ð•Ð¡Ð¢ â„–2
+    //Ð¿Ð¾Ð¿Ñ€Ð¾Ð±Ð¾Ð²Ð°Ñ‚ÑŒ Ð´Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ longUrl, ÐºÐ¾Ð³Ð´Ð° Ð¾Ð½ ÑƒÐ¶Ðµ ÐµÑÑ‚ÑŒ Ð² Ð±Ð°Ð·Ðµ Ð¸ Ð¾Ñ‚Ð´Ð°Ñ‚ÑŒ Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ðµ Ð¸Ð· Ð½ÐµÑ‘
     @Test
     void testAddUrl2() throws EntityNotFoundException {
         UrlService urlService = new UrlServiceImpl(new UrlRepositoryImpl());
@@ -47,8 +60,8 @@ public class UrlServiceTest {
         assertEquals(expectedShortUrl, addedUrl.shortURL());
     }
 
-    //ÒÅÑÒ ¹3
-    //íàéòè ïî shortUrl èñõîäíûé longUrl
+    //Ð¢Ð•Ð¡Ð¢ â„–3
+    //Ð½Ð°Ð¹Ñ‚Ð¸ Ð¿Ð¾ shortUrl Ð¸ÑÑ…Ð¾Ð´Ð½Ñ‹Ð¹ longUrl
     @Test
     void testAddUrl3() throws EntityNotFoundException {
         UrlService urlService = new UrlServiceImpl(new UrlRepositoryImpl());
@@ -67,23 +80,47 @@ public class UrlServiceTest {
     }
 
 
-    // Íåãàòèâíûå ñöåíàðèè
+    // ÐÐµÐ³Ð°Ñ‚Ð¸Ð²Ð½Ñ‹Ðµ ÑÑ†ÐµÐ½Ð°Ñ€Ð¸Ð¸
 
-    // ÒÅÑÒ ¹4
-    // Ïîïðîáîâàòü íàéòè ïî shortURL íåñóùåñòâóþùèé â áä longURL
+    // Ð¢Ð•Ð¡Ð¢ â„–4
+    // ÐŸÐ¾Ð¿Ñ€Ð¾Ð±Ð¾Ð²Ð°Ñ‚ÑŒ Ð½Ð°Ð¹Ñ‚Ð¸ Ð¿Ð¾ shortURL Ð½ÐµÑÑƒÑ‰ÐµÑÑ‚Ð²ÑƒÑŽÑ‰Ð¸Ð¹ Ð² Ð±Ð´ longURL
     @Test
     void testAddUrl4() throws EntityNotFoundException {
         UrlService urlService = new UrlServiceImpl(new UrlRepositoryImpl());
         //given:
-        String ShortUrlTryToFind = "https://MyServer.com/1";
+        urlService.addUrl(new Url("1","https://google.com" ,"https://MyServer.com/1"));
+        String ShortUrlTryToFind = "https://MyServer.com/2";
+        //Ð•ÑÐ»Ð¸ ÑÐ´ÐµÐ»Ð°Ñ‚ÑŒ String ShortUrlTryToFind = "https://MyServer.com/2";
+        // Ñ‚Ð¾ ÐµÑÑ‚ÑŒ Ð½Ðµ ÑÑƒÑ‰ÐµÑÑ‚Ð²ÑƒÑŽÑ‰Ð¸Ð¹ Ð² Ð±Ð´, Ñ‚Ð¾ Ñ‚ÐµÑÑ‚ Ð±ÑƒÐ´ÐµÑ‚ Ð¿Ñ€Ð¾Ð¹Ð´ÐµÐ½
         //when:
-        try {
-            Url foundedUrl = urlService.findUrl(ShortUrlTryToFind);
-        } catch (Exception ex) {
-            System.out.printf("URL-àäðåñ ñ òàêèì ñîêðàùåííûì (short) URl %s íå íàéäåí%n", ShortUrlTryToFind);
-        }
-
+        Throwable exception = assertThrows(EntityNotFoundException.class, () -> {
+            Url foundedUrl = urlService.findUrl(new Url(null, "", ShortUrlTryToFind));
+        });
 
         //then:
+        assertNotNull(exception);
+        assertEquals("A URL with such a short Url: " + ShortUrlTryToFind + " was not found",
+                new String(exception.getMessage()));
+    }
+
+    // Ð¢Ð•Ð¡Ð¢ â„–5
+    // ÐŸÐ¾Ð¿Ñ€Ð¾Ð±Ð¾Ð²Ð°Ñ‚ÑŒ Ð½Ð°Ð¹Ñ‚Ð¸ Ð¿Ð¾ shortURL Ð½ÐµÑÑƒÑ‰ÐµÑÑ‚Ð²ÑƒÑŽÑ‰Ð¸Ð¹ Ð² Ð±Ð´ longURL
+    @Test
+    void testAddUrl5() throws EntityNotFoundException {
+        UrlService urlService = new UrlServiceImpl(new UrlRepositoryImpl());
+        //given:
+        urlService.addUrl(new Url("1","https://google.com" ,"https://MyServer.com/1"));
+        String ShortUrlTryToFind = "https://MyServer.com/1";
+        //Ð•ÑÐ»Ð¸ ÑÐ´ÐµÐ»Ð°Ñ‚ÑŒ String ShortUrlTryToFind = "https://MyServer.com/1";
+        // Ñ‚Ð¾ ÐµÑÑ‚ÑŒ ÑÑƒÑ‰ÐµÑÑ‚Ð²ÑƒÑŽÑ‰Ð¸Ð¹ Ð² Ð±Ð´, Ñ‚Ð¾ Ñ‚ÐµÑÑ‚ Ð½Ðµ Ð±ÑƒÐ´ÐµÑ‚ Ð¿Ñ€Ð¾Ð¹Ð´ÐµÐ½
+        //when:
+        Throwable exception = assertThrows(EntityNotFoundException.class, () -> {
+            Url foundedUrl = urlService.findUrl(new Url(null, "", ShortUrlTryToFind));
+        });
+
+        //then:
+        assertNotNull(exception);
+        assertEquals("A URL with such a short Url: " + ShortUrlTryToFind + " was not found",
+                new String(exception.getMessage()));
     }
 }

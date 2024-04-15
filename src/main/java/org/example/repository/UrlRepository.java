@@ -18,6 +18,4 @@ public interface UrlRepository {
 
     String getCurrentId();
 
-    String getMyServer();
-
 }

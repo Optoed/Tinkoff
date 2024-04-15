@@ -16,11 +16,13 @@ public class UrlServiceImpl implements UrlService {
         this.urlRepository = urlRepository;
     }
 
+    //Сервер для хранения URL-ссылок
+    public static final String MyServer = "https://MyServer.com/";
+
     private static final String allBase62Characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
     //Получение хэш-строки из id (переводим в десятичное число и потом в 62-ричное)
-    @Override
-    public String getBase62HashCode(String id) {
+    private String getBase62HashCode(String id) {
         long base10HashCode = Long.parseLong(id);
         StringBuilder base62HashCodeString = new StringBuilder();
         while (base10HashCode > 0) {
@@ -30,29 +32,25 @@ public class UrlServiceImpl implements UrlService {
         return base62HashCodeString.toString();
     }
 
-    @Override
-    public void makeNextId() {
+    private void makeNextId() {
         //Вызываем один раз
         urlRepository.getNextId();
     }
 
-    @Override
-    public String getCurrentId() {
+    private String getCurrentId() {
         //можем вызывать сколько угодно раз
         return urlRepository.getCurrentId();
     }
 
-    @Override
-    public String getNewShortURl() {
+    private String getNewShortURl() {
         //но на момент вызова мы предварительно вызовем makeNextId(), тем самым сделав Id актуальным
         String id = getCurrentId();
         String base62HashString = getBase62HashCode(id);
-        String newShortURl = urlRepository.getMyServer() + base62HashString;
+        String newShortURl = MyServer + base62HashString;
         return newShortURl;
     }
 
 
-    @Override
     public Url addUrl(Url url) throws IllegalStateException {
 
         Optional<UrlDao> urlDao = urlRepository.findUrlByLongUrl(url.longURL());
@@ -70,33 +68,25 @@ public class UrlServiceImpl implements UrlService {
 
     }
 
-    @Override
-    public Url findUrl(String id) throws EntityNotFoundException {
-        Optional<UrlDao> urlDao = urlRepository.findUrlById(id);
-        return urlDao.map(url -> new Url(url.id(), url.longURL(), url.shortURL())).orElseThrow(
-                () -> new EntityNotFoundException("URL-адрес с таким идентификатором id не найден")
-            );
-    }
-
     //Помни, что возможно тут стоит использовать Optional и подумай над throws EntityNotFoundException;
     @Override
     public Url findUrl(Url url) throws EntityNotFoundException {
         if (url.id() != null) {
             Optional<UrlDao> urlDao = urlRepository.findUrlById(url.id());
             return urlDao.map(newUrl -> new Url(newUrl.id(), newUrl.longURL(), newUrl.shortURL())).orElseThrow(
-                    () -> new EntityNotFoundException("URL-адрес с таким идентификатором id не найден")
+                    () -> new EntityNotFoundException("A URL with such a ID: " + url.id() + " was not found")
             );
 
         } else if (!Objects.equals(url.longURL(), "")) {
             Optional<UrlDao> urlDao = urlRepository.findUrlByLongUrl(url.longURL());
             return urlDao.map(newUrl -> new Url(newUrl.id(), newUrl.longURL(), newUrl.shortURL())).orElseThrow(
-                    () -> new EntityNotFoundException("URL-адрес с таким идентификатором id не найден")
+                    () -> new EntityNotFoundException("A URL with such a long Url: " + url.longURL() + " was not found")
             );
 
         } else if (!Objects.equals(url.shortURL(), "")) {
             Optional<UrlDao> urlDao = urlRepository.findUrlByShortUrl(url.shortURL());
             return urlDao.map(newUrl -> new Url(newUrl.id(), newUrl.longURL(), newUrl.shortURL())).orElseThrow(
-                    () -> new EntityNotFoundException("URL-адрес с таким идентификатором id не найден")
+                    () -> new EntityNotFoundException("A URL with such a short Url: " + url.shortURL() + " was not found")
             );
         }
 

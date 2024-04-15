@@ -10,11 +10,6 @@ public class UrlRepositoryImpl implements UrlRepository {
     private static final Database dataBase = Database.getInstance();
 
     @Override
-    public String getMyServer() {
-        return dataBase.getMyServer();
-    }
-
-    @Override
     public Optional<UrlDao> findUrlById(String id) {
         return Optional.ofNullable(dataBase.getUrlById(id));
     }
