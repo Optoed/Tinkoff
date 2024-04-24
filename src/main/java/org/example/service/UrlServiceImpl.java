@@ -5,6 +5,7 @@ import org.example.repository.UrlRepository;
 import org.example.repository.dao.UrlDao;
 import org.example.service.model.Url;
 
+import java.sql.SQLException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -32,17 +33,17 @@ public class UrlServiceImpl implements UrlService {
         return base62HashCodeString.toString();
     }
 
-    private void makeNextId() {
+    private void makeNextId() throws SQLException {
         //Вызываем один раз
         urlRepository.getNextId();
     }
 
-    private String getCurrentId() {
+    private String getCurrentId() throws SQLException {
         //можем вызывать сколько угодно раз
         return urlRepository.getCurrentId();
     }
 
-    private String getNewShortURl() {
+    private String getNewShortURl() throws SQLException {
         //но на момент вызова мы предварительно вызовем makeNextId(), тем самым сделав Id актуальным
         String id = getCurrentId();
         String base62HashString = getBase62HashCode(id);
@@ -51,7 +52,7 @@ public class UrlServiceImpl implements UrlService {
     }
 
 
-    public Url addUrl(Url url) throws IllegalStateException {
+    public Url addUrl(Url url) throws IllegalStateException, SQLException {
 
         Optional<UrlDao> urlDao = urlRepository.findUrlByLongUrl(url.longURL());
 
@@ -70,7 +71,7 @@ public class UrlServiceImpl implements UrlService {
 
     //Помни, что возможно тут стоит использовать Optional и подумай над throws EntityNotFoundException;
     @Override
-    public Url findUrl(Url url) throws EntityNotFoundException {
+    public Url findUrl(Url url) throws EntityNotFoundException, SQLException {
         if (url.id() != null) {
             Optional<UrlDao> urlDao = urlRepository.findUrlById(url.id());
             return urlDao.map(newUrl -> new Url(newUrl.id(), newUrl.longURL(), newUrl.shortURL())).orElseThrow(

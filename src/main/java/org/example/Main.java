@@ -3,16 +3,30 @@ package org.example;
 import org.example.controller.UrlController;
 import org.example.controller.dto.UrlDto;
 import org.example.exception.EntityNotFoundException;
+import org.example.jdbc.JdbcUtils;
 import org.example.repository.UrlRepositoryImpl;
 import org.example.service.UrlServiceImpl;
 import org.example.service.model.Url;
 import org.example.utils.ReadUtils;
 
 import java.net.URL;
+import java.sql.SQLException;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
+        try {
+            boolean connected = JdbcUtils.createConnection();
+            if (!connected) {
+                System.out.println("Error with connection to database");
+                return;
+            }
+            runCli();
+        } finally {
+            JdbcUtils.closeConnection();
+        }
+    }
 
+    private static void runCli() throws SQLException {
         while (true) {
             UrlController urlController = new UrlController(new UrlServiceImpl(new UrlRepositoryImpl()));
             printMenu();
@@ -45,6 +59,8 @@ public class Main {
                     );
                 } catch (EntityNotFoundException ex) {
                     System.out.printf("URL-адрес с таким сокращенным (short) URl %s не найден%n", shortURLString);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
                 }
 
             } else if (chosenService.equals("3")) {
@@ -55,6 +71,7 @@ public class Main {
             }
         }
     }
+
 
     private static String readAndValidateURL() {
 

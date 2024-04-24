@@ -4,6 +4,8 @@ import org.example.controller.dto.UrlDto;
 import org.example.exception.EntityNotFoundException;
 import org.example.service.model.Url;
 
+import java.sql.SQLException;
+
 public interface UrlService {
 
     /**
@@ -12,7 +14,7 @@ public interface UrlService {
      * @param url - model with url parameters
      * @return - url of saved url
      */
-    Url addUrl(Url url);
+    Url addUrl(Url url) throws SQLException;
 
     /**
      * find exist url by provided id
@@ -21,5 +23,5 @@ public interface UrlService {
      * @return {@link Url} by url
      * @throws EntityNotFoundException - if url with provided url not found
      */
-    Url findUrl(Url url) throws EntityNotFoundException;
+    Url findUrl(Url url) throws EntityNotFoundException, SQLException;
 }
