@@ -1,34 +1,23 @@
 package org.example.jdbc;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 
+@Configuration
 public class JdbcUtils {
 
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/urlDatabase";
+    private static final String DB_URL = "jdbc:postgresql://localhost:5432/urlDatabase_http";
 
-    private static Connection connection;
-
-    public static boolean createConnection() {
+    @Bean(value = "connection")
+    public Connection getConnection() {
         try {
-            //пользователь - postgres, пароль - отсутствует
-            connection = DriverManager.getConnection(DB_URL, "postgres", "");
-            return true;
+            return DriverManager.getConnection(DB_URL, "postgres", "my_password");
         } catch (Exception ex) {
             System.out.println("Error occurred while connection to database: " + ex.getMessage());
-        }
-        return false;
-    }
-
-    public static Connection getConnection() {
-        return connection;
-    }
-
-    public static void closeConnection() {
-        try {
-            connection.close();
-        } catch (Exception ex) {
-            System.out.println("Error occurred while closing connection to database: " + ex.getMessage());
+            throw new RuntimeException(ex);
         }
     }
 }

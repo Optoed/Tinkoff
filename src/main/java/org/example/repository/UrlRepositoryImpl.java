@@ -2,17 +2,28 @@ package org.example.repository;
 
 import org.example.jdbc.JdbcUtils;
 import org.example.repository.dao.UrlDao;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Optional;
 
+@Repository
 public class UrlRepositoryImpl implements UrlRepository {
+
+    private final Connection connection;
+
+    public UrlRepositoryImpl(Connection connection) {
+        this.connection = connection;
+    }
 
     @Override
     public Optional<UrlDao> findUrlById(String id) throws SQLException {
-
         String sql = "SELECT id,longURL,shortURL FROM urls WHERE id =?";
-        Connection connection = JdbcUtils.getConnection();
+>>>>>>> URL-Shortener-v-3
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, id);
         ResultSet resultSet = statement.executeQuery();
@@ -30,9 +41,7 @@ public class UrlRepositoryImpl implements UrlRepository {
     //поиск по longURL
     @Override
     public Optional<UrlDao> findUrlByLongUrl(String longURL) throws SQLException {
-
         String sql = "SELECT id,longURL,shortURL FROM urls WHERE longURL =?";
-        Connection connection = JdbcUtils.getConnection();
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, longURL);
         ResultSet resultSet = statement.executeQuery();
@@ -51,24 +60,26 @@ public class UrlRepositoryImpl implements UrlRepository {
     @Override
     public Optional<UrlDao> findUrlByShortUrl(String shortURL) throws SQLException {
         String sql = "SELECT id,longURL,shortURL FROM urls WHERE shortURL =?";
-        Connection connection = JdbcUtils.getConnection();
-        PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setString(1, shortURL);
-        ResultSet resultSet = statement.executeQuery();
-        if (resultSet.next()) {
-            UrlDao urlDao = new UrlDao(
-                    resultSet.getString("id"),
-                    resultSet.getString("longURL"),
-                    resultSet.getString("shortURL")
-            );
-            return Optional.of(urlDao);
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, shortURL);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    UrlDao urlDao = new UrlDao(
+                            resultSet.getString("id"),
+                            resultSet.getString("longURL"),
+                            resultSet.getString("shortURL")
+                    );
+                    return Optional.of(urlDao);
+                }
+                return Optional.empty();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error occurred while searching URL by short URL: " + shortURL, e);
         }
-        return Optional.empty();
     }
 
     @Override
     public UrlDao save(UrlDao urlDao) throws SQLException {
-        Connection connection = JdbcUtils.getConnection();
         String sql = "INSERT INTO urls (longURL, shortURL) VALUES (?,?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
         preparedStatement.setString(1, urlDao.longURL());
@@ -87,7 +98,6 @@ public class UrlRepositoryImpl implements UrlRepository {
     // через sequence
     @Override
     public String getNextId() throws SQLException {
-        Connection connection = JdbcUtils.getConnection();
         try (Statement statement = connection.createStatement()) {
             // Создание последовательности, если ее еще нет
             statement.execute("CREATE SEQUENCE IF NOT EXISTS url_sequence START 1");
@@ -104,8 +114,6 @@ public class UrlRepositoryImpl implements UrlRepository {
 
     @Override
     public String getCurrentId() throws SQLException {
-        Connection connection = JdbcUtils.getConnection();
-
         try (Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery("SELECT LASTVAL()");
             if (resultSet.next()) {

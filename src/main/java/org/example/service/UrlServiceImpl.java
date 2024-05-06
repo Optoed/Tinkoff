@@ -4,11 +4,14 @@ import org.example.exception.EntityNotFoundException;
 import org.example.repository.UrlRepository;
 import org.example.repository.dao.UrlDao;
 import org.example.service.model.Url;
+import org.springframework.stereotype.Service;
+
 
 import java.sql.SQLException;
 import java.util.Objects;
 import java.util.Optional;
 
+@Service
 public class UrlServiceImpl implements UrlService {
 
     private final UrlRepository urlRepository;
@@ -18,7 +21,6 @@ public class UrlServiceImpl implements UrlService {
     }
 
     //Сервер для хранения URL-ссылок
-    public static final String MyServer = "https://MyServer.com/";
 
     private static final String allBase62Characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
@@ -47,7 +49,8 @@ public class UrlServiceImpl implements UrlService {
         //но на момент вызова мы предварительно вызовем makeNextId(), тем самым сделав Id актуальным
         String id = getCurrentId();
         String base62HashString = getBase62HashCode(id);
-        String newShortURl = MyServer + base62HashString;
+        //String newShortURl = MyServer + base62HashString;
+        String newShortURl = base62HashString;
         return newShortURl;
     }
 
@@ -66,6 +69,7 @@ public class UrlServiceImpl implements UrlService {
         else {
             return new Url(urlDao.get().id(), urlDao.get().longURL(), urlDao.get().shortURL());
         }
+
 
     }
 
@@ -91,6 +95,22 @@ public class UrlServiceImpl implements UrlService {
             );
         }
 
-        throw new EntityNotFoundException("Недостаточно (отсутствие) данных для поиска URL-адреса");
+        throw new EntityNotFoundException("There is not enough (no) data to look up the URL");
+    }
+
+    @Override
+    public Url findUrl(String shortURL) throws EntityNotFoundException, SQLException {
+        if (shortURL != null) {
+            try {
+                Optional<UrlDao> urlDao = urlRepository.findUrlByShortUrl(shortURL);
+                return urlDao.map(newUrl -> new Url(newUrl.id(), newUrl.longURL(), newUrl.shortURL())).orElseThrow(
+                        () -> new EntityNotFoundException("A URL with such a short Url: " + shortURL + " was not found")
+                );
+            } catch (SQLException e) {
+                // Handle SQLException or rethrow as RuntimeException
+                throw new RuntimeException("Error occurred while searching URL by short URL: " + shortURL, e);
+            }
+        }
+        throw new EntityNotFoundException("There is not enough (no) data to look up the URL");
     }
 }

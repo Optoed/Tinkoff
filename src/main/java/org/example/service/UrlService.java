@@ -24,4 +24,5 @@ public interface UrlService {
      * @throws EntityNotFoundException - if url with provided url not found
      */
     Url findUrl(Url url) throws EntityNotFoundException, SQLException;
+    Url findUrl(String shortURL) throws EntityNotFoundException, SQLException;
 }
