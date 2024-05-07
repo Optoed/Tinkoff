@@ -23,7 +23,6 @@ public class UrlRepositoryImpl implements UrlRepository {
     @Override
     public Optional<UrlDao> findUrlById(String id) throws SQLException {
         String sql = "SELECT id,longURL,shortURL FROM urls WHERE id =?";
->>>>>>> URL-Shortener-v-3
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, id);
         ResultSet resultSet = statement.executeQuery();

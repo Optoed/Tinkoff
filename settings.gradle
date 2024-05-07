@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-rootProject.name = 'cli-example'
-=======
+
 rootProject.name = 'cat-example'
->>>>>>> URL-Shortener-v-3
+
