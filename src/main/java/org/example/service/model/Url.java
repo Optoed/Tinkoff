@@ -2,7 +2,7 @@ package org.example.service.model;
 
 import org.example.controller.dto.UrlDto;
 
-public record Url(String id, String longURL, String shortURL) {
+public record Url(Long id, String longURL, String shortURL) {
     public Url(String longURL) {
         this(null, longURL, "");
     }
