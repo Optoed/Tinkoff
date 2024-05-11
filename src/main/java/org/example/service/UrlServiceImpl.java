@@ -8,6 +8,7 @@ import org.example.dao.repository.UrlRepository;
 
 import org.example.service.model.Url;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.Objects;
@@ -55,7 +56,8 @@ public class UrlServiceImpl implements UrlService {
         return getBase62HashCode(id);
     }
 
-
+    //используем транзакции, чтобы id увеличивался только в случае успешного сохранения объекта в бд
+    @Transactional
     public Url addUrl(Url url) throws IllegalStateException, SQLException {
 
         Optional<UrlEntity> urlDao = urlRepository.findUrlByLongURL(url.longURL());
@@ -70,7 +72,6 @@ public class UrlServiceImpl implements UrlService {
 
         //то есть не нашли такой в базе данных, поэтому добавляем
         if (urlDao.isEmpty()) {
-            //увеличиваем счётчик в DataBase на 1 (для нового Id)
             makeNextId();
             UrlEntity savedUrlDao = urlRepository.save(new UrlEntity(getCurrentId(), url.longURL(), getNewShortURl()));
             return new Url(savedUrlDao.id(), savedUrlDao.longURL(), savedUrlDao.shortURL());

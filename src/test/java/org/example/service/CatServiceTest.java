@@ -1,29 +1,34 @@
 package org.example.service;
 
-import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import org.example.dao.entity.UrlEntity;
+import org.example.dao.repository.UrlRepository;
+import org.example.exception.EntityNotFoundException;
+import org.example.service.model.Url;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.web.servlet.MockMvc;
+import org.mockito.Mockito;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+import java.sql.SQLException;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
 public class CatServiceTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    UrlRepository urlRepository = Mockito.mock(UrlRepository.class);
+    UrlService urlService = new UrlServiceImpl(urlRepository);
 
     @Test
-    void testAddCat() throws Exception {
-        mockMvc.perform(get("/cat/" + 4))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.age", is(15))
-                );
+    void testAddUrl() throws EntityNotFoundException, SQLException {
+        //given:
+        UrlEntity newUrl = new UrlEntity(1L, "https://www.youtube.com/", "1");
+        Url expected = new Url(1L, "https://www.youtube.com/", "1");
+
+        //when:
+        when(urlRepository.findUrlByShortURL("1")).thenReturn(Optional.of(newUrl));
+        Url actual = urlService.findUrl("1");
+
+        //then:
+        assertEquals(expected, actual);
     }
 }
