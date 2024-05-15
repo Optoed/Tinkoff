@@ -23,9 +23,6 @@ public class UrlServiceImpl implements UrlService {
         this.urlRepository = urlRepository;
     }
 
-    //Сервер для хранения URL-ссылок
-    //public static final String MyServer = "https://MyServer.com/";
-
     private static final String allBase62Characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
     //Получение хэш-строки из id (переводим в десятичное число и потом в 62-ричное)
@@ -40,7 +37,7 @@ public class UrlServiceImpl implements UrlService {
     }
 
     private void makeNextId() throws SQLException {
-        //Вызываем один раз
+        //Вызываем только один раз за раз
         urlRepository.getNextId();
     }
 
@@ -52,7 +49,6 @@ public class UrlServiceImpl implements UrlService {
     private String getNewShortURl() throws SQLException {
         //но на момент вызова мы предварительно вызовем makeNextId(), тем самым сделав Id актуальным
         Long id = getCurrentId();
-        //String newShortURl = MyServer + base62HashString;
         return getBase62HashCode(id);
     }
 
@@ -61,14 +57,6 @@ public class UrlServiceImpl implements UrlService {
     public Url addUrl(Url url) throws IllegalStateException, SQLException {
 
         Optional<UrlEntity> urlDao = urlRepository.findUrlByLongURL(url.longURL());
-
-        // Проверяем, есть ли значение в Optional urlDao
-//        urlDao.ifPresent(entity -> {
-//            System.out.println("Содержимое объекта urlDao:");
-//            System.out.println("ID: " + entity.getId());
-//            System.out.println("Long URL: " + entity.getLongURL());
-//            System.out.println("Short URL: " + entity.getShortURL());
-//        });
 
         //то есть не нашли такой в базе данных, поэтому добавляем
         if (urlDao.isEmpty()) {
@@ -81,7 +69,6 @@ public class UrlServiceImpl implements UrlService {
         }
     }
 
-    //Помни, что возможно тут стоит использовать Optional и подумай над throws EntityNotFoundException;
     @Override
     public Url findUrl(Url url) throws EntityNotFoundException, SQLException {
         if (url.id() != null) {

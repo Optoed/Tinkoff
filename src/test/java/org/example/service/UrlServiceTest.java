@@ -13,7 +13,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-public class CatServiceTest {
+public class UrlServiceTest {
 
     UrlRepository urlRepository = Mockito.mock(UrlRepository.class);
     UrlService urlService = new UrlServiceImpl(urlRepository);
