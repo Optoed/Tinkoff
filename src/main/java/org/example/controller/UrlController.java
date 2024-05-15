@@ -11,6 +11,7 @@ import org.example.exception.EntityNotFoundException;
 import org.example.service.UrlService;
 import org.example.service.model.Url;
 
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,7 @@ import java.sql.SQLException;
 
 @RestController
 @RequestMapping("/url")
+
 public class UrlController {
 
     private final UrlService urlService;

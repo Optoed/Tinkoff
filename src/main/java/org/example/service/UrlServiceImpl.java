@@ -10,6 +10,7 @@ import org.example.service.model.Url;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import java.sql.SQLException;
 import java.util.Objects;
 import java.util.Optional;
@@ -67,6 +68,8 @@ public class UrlServiceImpl implements UrlService {
         else {
             return new Url(urlDao.get().id(), urlDao.get().longURL(), urlDao.get().shortURL());
         }
+
+
     }
 
     @Override
